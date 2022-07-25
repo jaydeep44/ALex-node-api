@@ -1,6 +1,6 @@
 const attandance = require("../models/attaindence");
 const Student = require("../models/studentModel");
-const studentRecod = require("../models/studentRecordModel")
+// const studentRecod = require("../models/studentRecordModel");
 const User = require("../models/userModel");
 var moment = require("moment");
 var mongodb = require("mongodb");
@@ -8,22 +8,22 @@ var mongodb = require("mongodb");
 const date = require("date-and-time");
 
 exports.attaindence_save = async (req, res) => {
-    console.log(req.body.date);
+  console.log(req.body.date);
 
   var now = new Date();
   const value = date.format(now, "YYYY-MM-DD");
-  console.log(value,"dateeeeeeee");
-   await attandance
+  console.log(value, "dateeeeeeee");
+  await attandance
     .find({
-      date:req.body.date ,
-      studentId:req.body.studentId
+      date: req.body.date,
+      studentId: req.body.studentId,
     })
     .then((result) => {
       console.log(result, "resulttt");
       if (result.length) {
-         res.status(400).send({ message: "attaindence already save" });
+        res.status(400).send({ message: "attaindence already save" });
       } else {
-        console.log("attaindence save")
+        console.log("attaindence save");
         const studentSave = new attandance({
           studentId: req.body.studentId,
           counsellor_id: req.body.counsellor_id,
@@ -39,17 +39,11 @@ exports.attaindence_save = async (req, res) => {
           .then((response) => {
             res.status(200).send(response);
             // console.log(response);
-              
 
             if (response) {
-               
-              
-        
-
               Student.findOneAndUpdate(
                 { _id: req.body.studentId },
                 {
-
                   // $push: { attaindence: response._id }
                   attaindence: response._id,
                 },
@@ -63,24 +57,21 @@ exports.attaindence_save = async (req, res) => {
                   // console.log(err);
                 });
 
-
-
-                studentRecod.findOneAndUpdate(
+              studentRecod
+                .findOneAndUpdate(
                   { student: req.body.studentId },
                   {
-  
-                    $push: { attaindence: response._id }
-                    
+                    $push: { attaindence: response._id },
                   },
-  
+
                   { new: true }
                 )
-                  .then((data) => {
-                    console.log(data);
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
+                .then((data) => {
+                  console.log(data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
               // const studentRecords = new StudentRecords({
               //   studentId: req.body.studentId,
               //   attendence: response._id,
@@ -355,149 +346,274 @@ exports.getCouncellorBYClass = async (req, res) => {
     });
 };
 
+// exports.getPreviousRecords = async (req, res) => {
+//   var id = req.params.id;
+//   var c = moment().startOf("month").toDate();
+//   var d = moment().endOf("month").toDate();
 
+//   var a = moment().startOf("week").toDate();
+//   var b = moment().endOf("week").toDate();
 
-exports.getPreviousRecords = async (req, res) =>{
+//   const startOfMonth = date.format(c, "YYYY-MM-DD");
+//   const endOfMonth = date.format(d, "YYYY-MM-DD");
 
-  var id = req.params.id;
-  var c = moment().startOf("month").toDate();
-  var d = moment().endOf("month").toDate();
+//   const startOfWeek = date.format(a, "YYYY-MM-DD");
+//   const endOfWeek = date.format(b, "YYYY-MM-DD");
 
-  var a = moment().startOf("week").toDate();
-  var b = moment().endOf("week").toDate();
+//   console.log(req.body.fromDate);
+//   if (req.body.fromDate && req.body.toDate) {
+//     const data = await attandance
+//       .find({
+//         $and: [
+//           { classId: id },
+//           { date: { $lte: req.body.toDate, $gte: req.body.fromDate } },
+//         ],
+//       })
 
-  const startOfMonth = date.format(c, "YYYY-MM-DD");
-  const endOfMonth = date.format(d, "YYYY-MM-DD");
+//       .populate({ path: "studentId", select: ["-attaindence"] })
+//       .populate({ path: "counsellor_id" })
+//       .populate({ path: "classId" })
 
-  const startOfWeek = date.format(a, "YYYY-MM-DD");
-  const endOfWeek = date.format(b, "YYYY-MM-DD");
+//       .then((response) => {
+//         res.status(200).send({
+//           data: response,
+//         });
+//       })
+//       .catch((err) => {
+//         res.status(400).send({ message: err.message });
+//       });
+//   }
+// };
 
-  console.log(req.body.fromDate);
-  if (req.body.fromDate && req.body.toDate) {
-    const data = await attandance
-      .find({
-        $and: [
-          { classId: id },
-          { date: { $lte: req.body.toDate, $gte: req.body.fromDate } },
-        ],
-      })
+// exports.GetStoreData = async (req, res) => {
+//   const now = new Date();
+//   //   {
+//   //     "fromDate":"15/07/22",
+//   //     "toDate":"16/07/22"
+//   // }
+//   var id = req.params.id;
+//   var c = moment().startOf("month").toDate();
+//   var d = moment().endOf("month").toDate();
 
-      .populate({ path: "studentId", select: ["-attaindence"] })
-      .populate({ path: "counsellor_id" })
-      .populate({ path: "classId" })
+//   var a = moment().startOf("week").toDate();
+//   var b = moment().endOf("week").toDate();
 
-      .then((response) => {
-        res.status(200).send({
-          data: response,
-        });
-      })
-      .catch((err) => {
-        res.status(400).send({ message: err.message });
+//   const startOfMonth = date.format(c, "YYYY-MM-DD");
+//   const endOfMonth = date.format(d, "YYYY-MM-DD");
+
+//   const startOfWeek = date.format(a, "YYYY-MM-DD");
+//   const endOfWeek = date.format(b, "YYYY-MM-DD");
+
+//   console.log(startOfMonth, "idddddd", endOfMonth);
+//   if (req.body.fromDate && req.body.toDate) {
+//     const data = await attandance
+//       .find({
+//         $and: [
+//           { classId: id },
+//           { date: { $lt: req.body.toDate, $gte: req.body.fromDate } },
+//         ],
+//       })
+
+//       .populate({ path: "studentId", select: ["-attaindence"] })
+//       .populate({ path: "counsellor_id" })
+//       .populate({ path: "classId" })
+
+//       .then((response) => {
+//         res.status(200).send({
+//           data: response,
+//         });
+//       })
+//       .catch((err) => {
+//         res.status(400).send({ message: err.message });
+//       });
+//   }
+
+//   if (req.query.date === "week") {
+//     const data = await attandance
+//       .find({
+//         $and: [
+//           { classId: id },
+//           {
+//             date: {
+//               $gte: startOfWeek,
+//               $lt: endOfWeek,
+//             },
+//           },
+//         ],
+//       })
+//       // .populate({
+//       //   path: "attendence",
+//       //   select: { attendence: 1, date: 1 },
+//       // })
+//       .populate({ path: "studentId", select: ["-attaindence"] })
+//       .populate({ path: "counsellor_id" })
+//       .populate({ path: "classId" })
+
+//       .then((response) => {
+//         res.status(200).send({
+//           data: response,
+//         });
+//       })
+//       .catch((err) => {
+//         res.status(400).send({ message: err.message });
+//       });
+//   } else if (req.query.date === "month") {
+//     const data = await attandance
+//       .find({
+//         $and: [
+//           { classId: id },
+//           {
+//             date: {
+//               $gte: startOfMonth,
+//               $lt: endOfMonth,
+//             },
+//           },
+//         ],
+//       })
+//       // .populate({
+//       //   path: "attendence",
+//       //   select: { attendence: 1, date: 1 },
+//       // })
+//       .populate({ path: "studentId", select: ["-attaindence"] })
+//       .populate({ path: "counsellor_id" })
+//       .populate({ path: "classId" })
+
+//       .then((response) => {
+//         res.status(200).send({
+//           data: response,
+//         });
+//       })
+//       .catch((err) => {
+//         res.status(400).send({ message: err.message });
+//       });
+//   }
+// };
+
+exports.getPreviousRecords = async (req, res) => {
+  try {
+    var uniqueids = [];
+    var studentRecord = [];
+    var studentsID = [];
+    var id = req.params.id;
+    var c = moment().startOf("month").toDate();
+    var d = moment().endOf("month").toDate();
+
+    var a = moment().startOf("week").toDate();
+    var b = moment().endOf("week").toDate();
+
+    const startOfMonth = date.format(c, "YYYY-MM-DD");
+    const endOfMonth = date.format(d, "YYYY-MM-DD");
+
+    const startOfWeek = date.format(a, "YYYY-MM-DD") ;
+    const endOfWeek = date.format(b, "YYYY-MM-DD");
+    const currentMonth= new Date().toISOString().replace('-', '/').split('T')[0].replace('-', '/').split('/'); 
+    var datestr = req.body.toDate.split('-');
+      
+    if (req.body.fromDate && req.body.toDate) {
+      var Studentattend = await attandance.find({
+        classId :id,
+        createdAt: { 
+          $gte:req.body.fromDate, 
+          $lt: req.body.toDate
+      } 
       });
-  }
-}
+    console.log(currentMonth[1]>=datestr[1])
 
+     if (Studentattend.length > 0 && currentMonth[1]>=datestr[1] ) {
+
+        for (var i = 0; i < Studentattend.length; i++) {
+          studentsID.push(Studentattend[i].studentId);
+        }
+  
+        uniqueids = Object.values(
+          Studentattend.reduce(
+            (acc, cur) =>
+              Object.assign(acc, { [cur.studentId.toString()]: cur.studentId }),
+            {}
+          )
+        );
+  
+        for (var j = 0; j < uniqueids.length; j++) {
+          var a = await Student.findOne({_id:uniqueids[j], $or:[
+            
+            { name:{$regex: req.body.searchName || "", $options:'i'}},
+           
+           
+         ]});
+         if(a){
+          await attandance
+          .find({ studentId: uniqueids[j] })
+          .populate("counsellor_id")
+          .then((att) => {
+            studentRecord.push({
+              studentId: a,
+              attandan: att,
+            });
+          })
+          .catch((error) => {
+            res.status(400).send(error.message);
+          });
+         }
+      
+        }
+      } else {
+        var studentIDS = await Student.find({assignClass:id});
+        for(var i=0 ; i<studentIDS.length ; i++){
+          studentRecord.push({
+            studentId: studentIDS[i],
+            attandan: [],
+          });
+        }
+       
+      }
+
+   
+
+      res.send(studentRecord);
+    }
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
 
 exports.GetStoreData = async (req, res) => {
-  const now = new Date();
-  //   {
-  //     "fromDate":"15/07/22",
-  //     "toDate":"16/07/22"
-  // }
-  var id = req.params.id;
-  var c = moment().startOf("month").toDate();
-  var d = moment().endOf("month").toDate();
+  try {
+    const classID = req.params.classid;
+    var uniqueids = [];
+    var studentRecord = [];
+    var studentsID = [];
+    var Studentattend = await attandance.find({ classId: classID });
 
-  var a = moment().startOf("week").toDate();
-  var b = moment().endOf("week").toDate();
+    for (var i = 0; i < Studentattend.length; i++) {
+      studentsID.push(Studentattend[i].studentId);
+    }
 
-  const startOfMonth = date.format(c, "YYYY-MM-DD");
-  const endOfMonth = date.format(d, "YYYY-MM-DD");
+    uniqueids = Object.values(
+      Studentattend.reduce(
+        (acc, cur) =>
+          Object.assign(acc, { [cur.studentId.toString()]: cur.studentId }),
+        {}
+      )
+    );
 
-  const startOfWeek = date.format(a, "YYYY-MM-DD");
-  const endOfWeek = date.format(b, "YYYY-MM-DD");
-
-  console.log(startOfMonth, "idddddd", endOfMonth);
-  if (req.body.fromDate && req.body.toDate) {
-    const data = await attandance
-      .find({
-        $and: [
-          { classId: id },
-          { date: { $lt: req.body.toDate, $gte: req.body.fromDate } },
-        ],
-      })
-
-      .populate({ path: "studentId", select: ["-attaindence"] })
-      .populate({ path: "counsellor_id" })
-      .populate({ path: "classId" })
-
-      .then((response) => {
-        res.status(200).send({
-          data: response,
+    for (var j = 0; j < uniqueids.length; j++) {
+      var a = await Student.findById(uniqueids[j]);
+      await attandance
+        .find({ studentId: uniqueids[j] })
+        .populate("counsellor_id")
+        .then((att) => {
+          studentRecord.push({
+            studentId: a,
+            attandan: att,
+          });
+        })
+        .catch((error) => {
+          res.status(400).send(error.message);
         });
-      })
-      .catch((err) => {
-        res.status(400).send({ message: err.message });
-      });
-  }
+    }
 
-  if (req.query.date === "week") {
-    const data = await attandance
-      .find({
-        $and: [
-          { classId: id },
-          {
-            date: {
-              $gte: startOfWeek,
-              $lt: endOfWeek,
-            },
-          },
-        ],
-      })
-      // .populate({
-      //   path: "attendence",
-      //   select: { attendence: 1, date: 1 },
-      // })
-      .populate({ path: "studentId", select: ["-attaindence"] })
-      .populate({ path: "counsellor_id" })
-      .populate({ path: "classId" })
-
-      .then((response) => {
-        res.status(200).send({
-          data: response,
-        });
-      })
-      .catch((err) => {
-        res.status(400).send({ message: err.message });
-      });
-  } else if (req.query.date === "month") {
-    const data = await attandance
-      .find({
-        $and: [
-          { classId: id },
-          {
-            date: {
-              $gte: startOfMonth,
-              $lt: endOfMonth,
-            },
-          },
-        ],
-      })
-      // .populate({
-      //   path: "attendence",
-      //   select: { attendence: 1, date: 1 },
-      // })
-      .populate({ path: "studentId", select: ["-attaindence"] })
-      .populate({ path: "counsellor_id" })
-      .populate({ path: "classId" })
-
-      .then((response) => {
-        res.status(200).send({
-          data: response,
-        });
-      })
-      .catch((err) => {
-        res.status(400).send({ message: err.message });
-      });
+    res.send(studentRecord);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
   }
 };

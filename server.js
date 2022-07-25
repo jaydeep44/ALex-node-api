@@ -54,8 +54,9 @@ io.on("connection", (socket) => {
 
   socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
-  socket.on("message", (newMessageRecieved) => {
-    console.log(newMessageRecieved, "newMessage");
+  socket.on("message", (data) => {
+ 
+     var  newMessageRecieved = data[data.length - 1]
     var chat = newMessageRecieved.chat;
     var users = JSON.stringify(chat.users);
     // console.log(users,"+++++++++++")
@@ -67,12 +68,20 @@ io.on("connection", (socket) => {
       if (user._id == newMessageRecieved.sender._id) {
         console.log("hhhhhhhhhhhhh");
       }
-      socket.in(user._id).emit("message recieved", newMessageRecieved);
+      socket.in(user._id).emit("message recieved", data);
     });
   });
 
-  socket.off("setup", () => {
+  socket.on("messagesCount",(messagesData)=>{
+    console.log("messagesData.messagesData======",messagesData.messagesData)
+    console.log("messagesData.userid======",messagesData.userid)
+        socket.in(messagesData.userid).emit("message count", messagesData)
+  });
+
+
+  socket.off("setup", () => { 
     console.log("USER DISCONNECTED");
     socket.leave(userData);
   });
+
 });

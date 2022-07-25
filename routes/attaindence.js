@@ -24,7 +24,7 @@ router
 router.route("/updateStatus/:id").put(authJwt.verifyToken, Update_status);
 router.route("/startTime/:id").put(authJwt.verifyToken, startTime);
 router.route("/stopTime/:id").put(authJwt.verifyToken, stopTime);
-router.route("/getStudentRecords/:id?").get(authJwt.verifyToken, GetStoreData);
+router.route("/getStudentRecords/:classid").get(authJwt.verifyToken, GetStoreData);
 router.route("/dismiss").post(authJwt.verifyToken, dismiss);
 router.route("/attaindence").get(authJwt.verifyToken, getAttaindence);
 router.route("/attaindenceReport").get(authJwt.verifyToken, attendenceReport);

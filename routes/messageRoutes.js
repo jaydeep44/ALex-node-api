@@ -19,6 +19,6 @@ router.route("/sendMessage").post(sendMessage);
 router.route("/allGroup/:id").get(allGroupAndCouncellors);
 router.route("/updateMessage/:id").put(upload.none(), updateMessage);
 router.route("/deleteMessage/:id").delete(upload.none(), DeleteMessage);
-router.route("/groupMessage").put(upload.none(), seenGroupMessage);
+router.route("/seenGroupMessage").put(upload.none(), seenGroupMessage);
 
 module.exports = router;
