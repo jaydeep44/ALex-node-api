@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const app = require("./routes/index");
 
 const DatabaseConn = require("./conn");
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 4001;
 const baseURL = process.env.BASEURL;
 
 DatabaseConn();
