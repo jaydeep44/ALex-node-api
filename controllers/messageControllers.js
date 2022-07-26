@@ -68,7 +68,12 @@ exports.updateMessage = async (req, res) => {
 exports.allGroupAndCouncellors = async (req, res) => {
   var g = [];
   var unseenMessage = 0 ;
-  const h = await User.find();
+  var searchkey = req.query.searchkey;
+  const h = await User.find({$or:[
+    {
+      name:{$regex:searchkey || "" , $options:"i"}
+    }
+  ]});
   g.push(h);
   
   var data = await Chat.find({
@@ -76,6 +81,11 @@ exports.allGroupAndCouncellors = async (req, res) => {
       { isGroupChat: true },
       { users: { $elemMatch: { $eq: req.params.id } } },
     ],
+    $or:[
+      {
+        chatName:{$regex:searchkey || "" , $options:"i"}
+      }
+    ]
   })
     .populate("users", "-password")
     .populate("groupAdmin", "-password")
@@ -85,8 +95,7 @@ exports.allGroupAndCouncellors = async (req, res) => {
       for(var i=0; i<results.length ; i++){
        const message = await Message.find({chat:results[i]._id});
        for(var j=0 ; j < message.length ; j++){
-            console.log(message[j].readMembers.includes(req.params.id))
-            if(!message[j].readMembers.includes(req.params.id)){
+           if(!message[j].readMembers.includes(req.params.id)){
               unseenMessage = unseenMessage + 1
             }
 
