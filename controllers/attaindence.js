@@ -1,6 +1,6 @@
 const attandance = require("../models/attaindence");
 const Student = require("../models/studentModel");
-// const studentRecod = require("../models/studentRecordModel");
+// const StudentRecords = require("../models/studentRecordModel");
 const User = require("../models/userModel");
 var moment = require("moment");
 var mongodb = require("mongodb");

@@ -68,14 +68,23 @@ io.on("connection", (socket) => {
       if (user._id == newMessageRecieved.sender._id) {
         console.log("hhhhhhhhhhhhh");
       }
+      console.log("user._id",user._id)
       socket.in(user._id).emit("message recieved", data);
     });
   });
 
-  socket.on("messagesCount",(messagesData)=>{
-    console.log("messagesData.messagesData======",messagesData.messagesData)
-    console.log("messagesData.userid======",messagesData.userid)
-        socket.in(messagesData.userid).emit("message count", messagesData)
+  socket.on("notification",(messagesData)=>{
+     var chat = messagesData.userid.chat;
+     console.log("messagesData",messagesData)
+     var users = JSON.stringify(chat?.users);
+     if (!users) return console.log("chat.users not defined");
+     chat?.users.map((user) => {
+       if (user._id == messagesData.userid.sender._id) {
+         console.log("not count");
+       }else{
+              socket.in(user._id).emit("count", messagesData)
+       }
+       });
   });
 
 

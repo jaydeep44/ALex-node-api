@@ -71,7 +71,7 @@ exports.Update_Student = (req, res) => {
   if (req.file) {
     image = req.file.path;
   }
-
+ws
   Student.findByIdAndUpdate(
     req.params.id,
     {
