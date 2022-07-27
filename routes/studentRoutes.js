@@ -11,7 +11,7 @@ const {
   get_stu,
   FilterStudent,
   uploadcsv,
-  getAllStudentRecords,
+  
 } = require("../controllers/studentController");
 const authJwt = require("../middleware/authjwt");
 
@@ -30,7 +30,6 @@ router
   .delete(authJwt.verifyToken, upload.none(), DeleteStudent);
 router.route("/student").get(authJwt.verifyToken, Get_Student);
 router.route("/student/:id").get(authJwt.verifyToken, Get_student_by_id);
-router.route("/getStudentRecord").get(getAllStudentRecords);
 
 router
   .route("/updateManyRecords")

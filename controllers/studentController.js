@@ -1,7 +1,7 @@
 const Student = require("../models/studentModel");
 const attandance = require("../models/attaindence");
 const User = require("../models/userModel");
-const studentRecod = require("../models/studentRecordModel")
+// const studentRecod = require("../models/studentRecordModel")
 const StudentClass = require("../models/classModel");
 const ClassData = require("../models/classModel");
 const multer = require("multer");
@@ -47,16 +47,16 @@ exports.student_save = async (req, res) => {
     .then((response) => {
       res.status(200).send(response);
 
-      const studentrecord = new studentRecod({
-        student: response._id,
-      });
-      studentrecord
-        .save().then((result)=>{
-         console.log(result,"result")
-        }).catch((err)=>{
-          console.log(err,"result")
+      // const studentrecord = new studentRecod({
+      //   student: response._id,
+      // });
+      // studentrecord
+      //   .save().then((result)=>{
+      //    console.log(result,"result")
+      //   }).catch((err)=>{
+      //     console.log(err,"result")
 
-        })
+      //   })
     })
     .catch((err) => {
       res.status(400).send({ message: err.message });
@@ -101,23 +101,23 @@ ws
     }
   );
 };
-exports.getAllStudentRecords = async (req, res) => {
-  // const countryCount = await countryModel.countDocuments();
-  // const country = await studentRecod.find().populate('student').populate('attaindence');
-  try {
-    await studentRecod.find().populate('student',"-attaindence").populate({path:'attaindence',   match: { date: { $lte: req.query.toDate, $gte: req.query.fromDate } }}).then((result)=>{
-      res.status(200).json({
-        studentRecords: result,
-      });
-    }).catch((err)=>{
-      res.json({ error: err.message || err.toString() });
+// exports.getAllStudentRecords = async (req, res) => {
+//   // const countryCount = await countryModel.countDocuments();
+//   // const country = await studentRecod.find().populate('student').populate('attaindence');
+//   try {
+//     await studentRecod.find().populate('student',"-attaindence").populate({path:'attaindence',   match: { date: { $lte: req.query.toDate, $gte: req.query.fromDate } }}).then((result)=>{
+//       res.status(200).json({
+//         studentRecords: result,
+//       });
+//     }).catch((err)=>{
+//       res.json({ error: err.message || err.toString() });
 
-    })
+//     })
    
-  } catch (err) {
-    res.json({ error: err.message || err.toString() });
-  }
-};
+//   } catch (err) {
+//     res.json({ error: err.message || err.toString() });
+//   }
+// };
 
 
 
@@ -435,6 +435,10 @@ exports.Get_student_by_id = async (req, res) => {
 };
 
 exports.update_Many = async (req, res, next) => {
+  const now = new Date();
+ 
+  const value = date.format(now, "YYYY-MM-DD");
+
   var new_arr = [];
   for (var i = 0; i < req.body.id.length; i++) {
     new_arr.push(new mongodb.ObjectID(req.body.id[i]));
@@ -450,14 +454,33 @@ exports.update_Many = async (req, res, next) => {
           subErr: err.message,
         });
       } else {
+
+        
         res.status(200).json({
           updated_user: "Student Updated successfully",
           studentupdatedData: studentupdatedData,
         });
+        attandance.updateMany(
+          { studentId: { $in: new_arr }, date: value },
+          { classId: req.body.assignClass },
+          { new: true },
+          (err, studentupdatedData) => {
+            if (err) {
+              console.log(err,"error")
+      
+            } else {
+              console.log(studentupdatedData,"studentUpdatedData")
+              next();
+            }
+          }
+        );
         next();
       }
     }
   );
+  
+  
+
 };
 
 exports.search_Student = async (req, res) => {
@@ -467,7 +490,7 @@ exports.search_Student = async (req, res) => {
         name: { $regex: req.params.key },
       },
     ],
-  }).populate("assignClass");
+  }).populate("assignClass").populate("attaindence")
   if (student.length <= 0) {
     res.status(400).send({
       message: "no records found",

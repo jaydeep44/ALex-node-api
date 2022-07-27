@@ -57,21 +57,21 @@ exports.attaindence_save = async (req, res) => {
                   // console.log(err);
                 });
 
-              studentRecod
-                .findOneAndUpdate(
-                  { student: req.body.studentId },
-                  {
-                    $push: { attaindence: response._id },
-                  },
+              // studentRecod
+              //   .findOneAndUpdate(
+              //     { student: req.body.studentId },
+              //     {
+              //       $push: { attaindence: response._id },
+              //     },
 
-                  { new: true }
-                )
-                .then((data) => {
-                  console.log(data);
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
+              //     { new: true }
+              //   )
+              //   .then((data) => {
+              //     console.log(data);
+              //   })
+              //   .catch((err) => {
+              //     console.log(err);
+              //   });
               // const studentRecords = new StudentRecords({
               //   studentId: req.body.studentId,
               //   attendence: response._id,
@@ -194,11 +194,11 @@ exports.stopTime = (req, res) => {
                 subErr: err.message,
               });
             } else {
-              const studentRecords = new StudentRecords({
-                studentId: req.params.id,
-                attendence: updateTime._id,
-              });
-              studentRecords.save();
+              // const studentRecords = new StudentRecords({
+              //   studentId: req.params.id,
+              //   attendence: updateTime._id,
+              // });
+              // studentRecords.save();
 
               res.status(200).json({
                 message: "Time Updated successfully",
