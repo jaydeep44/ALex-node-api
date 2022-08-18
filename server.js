@@ -28,8 +28,12 @@ io.on("connection", (socket) => {
     console.log(detail, "detaill");
     io.emit("noty", detail);
   });
-
+  socket.on("sendNotificationAllDismiss", (data) => {
+    console.log(data,"datatatatata")
+    io.emit("dismissAllNotication");
+  });
   socket.on("sendNotificationDismiss", (data) => {
+    console.log(data,"datatatatata")
     console.log(data,"studentname")
     io.emit("dismissNotication");
   });

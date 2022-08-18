@@ -24,6 +24,30 @@ exports.allMessages = async (req, res) => {
     throw new Error(error.message);
   }
 };
+exports.softDeleteMessage = async (req, res) => {
+  Message.findByIdAndUpdate(
+    req.params.id,
+    {
+      deletedBy: 1,
+      deleteUsers:req.body.deleteUsers
+      
+    },
+    { new: true },
+    (err, messageupdatedData) => {
+      if (err) {
+        res.status(404).json({
+          message: "please enter correct student id ",
+          subErr: err.message,
+        });
+      } else {
+        res.status(200).json({
+          updated_user: "Message Deleted successfully",
+         messageupdatedData,
+        });
+      }
+    }
+  );
+};
 
 exports.DeleteMessage = async (req, res) => {
   let user = await Message.findById(req.params.id);
@@ -92,6 +116,7 @@ exports.allGroupAndCouncellors = async (req, res) => {
     .populate("latestMessage")
     .sort({ updatedAt: -1 })
     .then(async (results) => {
+      var a = results[0];
       for(var i=0; i<results.length ; i++){
        const message = await Message.find({chat:results[i]._id});
        for(var j=0 ; j < message.length ; j++){
@@ -100,9 +125,11 @@ exports.allGroupAndCouncellors = async (req, res) => {
             }
 
        }
-      
-       results[i].readBy = unseenMessage
+       if(a._id.equals(results[i]._id)){
+            results[i].readBy = unseenMessage
+       }
       }
+      console.log(unseenMessage,"unseenMessage")
       results.readBy = unseenMessage
       results = await User.populate(results, {
         path: "latestMessage.sender",
@@ -119,18 +146,23 @@ exports.allGroupAndCouncellors = async (req, res) => {
 
 exports.seenGroupMessage = async (req, res) => {
   try{
+    console.log(req.body,"bodyyyyyyyy")
     const { groupId, userId } = req.body;
     const msg = await Message.find({chat:groupId});
-
+console.log(msg,"messssssss")
     for(var i=0 ; i< msg.length ; i++){
     if(!msg[i].readMembers.includes(userId)){
         await Message.findByIdAndUpdate(msg[i]._id,{$push:{
           readMembers:userId
         }},{new:true});
+      }else{
+        await Message.findByIdAndUpdate(msg[i]._id,{$push:{
+          readBy:true
+        }},{new:true});
       }
       
     }
-    res.status(400).send({
+    res.status(200).send({
       message:"messages seen!"
     })
   }catch(error){
@@ -294,6 +326,7 @@ exports.sendMessage = async (req, res) => {
           console.log(error.message);
         }
       }else{
+
         var newMessage = {
           sender: senderId,
           content: content,

@@ -137,6 +137,7 @@ exports.createGroupChat = async (req, res) => {
   }
 
   users.push(req.user);
+  console.log(req.body.chatName,"chatnamee")
 
   try {
     const groupChat = await Chat.create({

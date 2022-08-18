@@ -235,8 +235,8 @@ exports.search_Councellor = async (req, res) => {
   let councellor = await User.find({
     $or: [
       {
-        // name: { $regex: req.params.key },
-         username: { $regex: req.params.key },
+         name: { $regex: req.params.key || "", $options:'i' },
+         //username: { $regex: req.params.key || "", $options:'i'},
 
       },
     ],

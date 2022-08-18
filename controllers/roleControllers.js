@@ -139,7 +139,7 @@ exports.search_Class = async (req, res) => {
   let student = await StudentClass.find({
     $or: [
       {
-        className: { $regex: req.params.key },
+        className: { $regex: req.params.key || "", $options:'i' },
       },
     ],
   })

@@ -2,27 +2,7 @@ const Pin = require("../models/pinModel");
 const bcrypt = require("bcrypt");
 
 exports.CreatePin = async (req, res) => {
-  //     const salt = bcrypt.genSaltSync(10);
-
-  //     const hash = bcrypt.hashSync(req.body.oldpin, salt);
-
-  //   await Pin.find().then((result)=>{
-  //     console.log(result[0].pin)
-
-  //   bcrypt.compare(hash, result[0].pin, (err, result) => {
-  //     console.log(result, "result");
-  //     if (!result) {
-  //       return res.status(400).json({
-  //         message: "OLdpin is incorrect",
-  //       });
-  //     }
-
-  //   });
-
-  // })
-
-  //    console.log(req.body.oldpin,"hashhhh")
-
+ 
   const body = req.body;
   const newUser = new Pin(body);
   const salt = bcrypt.genSaltSync(10);
@@ -44,7 +24,7 @@ exports.UpdatePin = async (req, res) => {
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(newPin, salt);
   const userId = await Pin.find({ userId: req.params.id });
-  console.log(userId[0].pin, "userId");
+  // console.log(userId[0].pin, "userId");
   const isMatch = await bcrypt.compare(oldPin, userId[0].pin);
   console.log(isMatch, "isMatch");
   if (!isMatch) {

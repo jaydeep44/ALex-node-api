@@ -67,11 +67,13 @@ exports.student_save = async (req, res) => {
 
 
 exports.Update_Student = (req, res) => {
+console.log("update student")
+
   var image;
   if (req.file) {
     image = req.file.path;
   }
-ws
+
   Student.findByIdAndUpdate(
     req.params.id,
     {
@@ -484,6 +486,7 @@ exports.update_Many = async (req, res, next) => {
 };
 
 exports.search_Student = async (req, res) => {
+
   let student = await Student.find({
     $or: [
       {

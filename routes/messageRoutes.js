@@ -7,6 +7,7 @@ const {
   DeleteMessage,
   seenGroupMessage,
   allGroupAndCouncellors,
+  softDeleteMessage,
 } = require("../controllers/messageControllers");
 const { upload } = require("../controllers/chatController");
 
@@ -20,5 +21,7 @@ router.route("/allGroup/:id").get(allGroupAndCouncellors);
 router.route("/updateMessage/:id").put(upload.none(), updateMessage);
 router.route("/deleteMessage/:id").delete(upload.none(), DeleteMessage);
 router.route("/seenGroupMessage").put(upload.none(), seenGroupMessage);
+router.route("/softDeleteMessage/:id").put(upload.none(), softDeleteMessage);
+
 
 module.exports = router;
