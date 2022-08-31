@@ -10,7 +10,7 @@ const attandences = mongoose.Schema(
     out_of_class: { type: String },
     outclassDateTime: { type: String },
     inclassDateTime: { type: String },
-    classId: { type: Schema.Types.ObjectId, ref: "Class", required: true },
+    classId: { type: Schema.Types.ObjectId, ref: "Class" },
   },
   { timestamps: true }
 );

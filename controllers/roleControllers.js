@@ -117,20 +117,9 @@ const a = StudentClass.find({className:req.body.className}).then((result)=>{
               });
             }
           }
-        );
-      
-  }
- 
-
-
-
-
-
-    
-})
-
-
-   
+        );    
+  } 
+}) 
 };
 
 

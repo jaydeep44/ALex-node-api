@@ -91,7 +91,6 @@ exports.updateMessage = async (req, res) => {
 };
 exports.allGroupAndCouncellors = async (req, res) => {
   var g = [];
-  var unseenMessage = 0 ;
   var searchkey = req.query.searchkey;
   const h = await User.find({$or:[
     {
@@ -116,29 +115,115 @@ exports.allGroupAndCouncellors = async (req, res) => {
     .populate("latestMessage")
     .sort({ updatedAt: -1 })
     .then(async (results) => {
+      
       var a = results[0];
       for(var i=0; i<results.length ; i++){
-       const message = await Message.find({chat:results[i]._id});
-       for(var j=0 ; j < message.length ; j++){
+      var unseenMessage = 0 ;
+
+        const message = await Message.find({chat:results[i]._id});
+
+        for(var j=0 ; j < message.length ; j++){
+
            if(!message[j].readMembers.includes(req.params.id)){
+           
               unseenMessage = unseenMessage + 1
             }
 
-       }
-       if(a._id.equals(results[i]._id)){
-            results[i].readBy = unseenMessage
-       }
+      
+          }
+       results[i].readBy = unseenMessage
       }
-      console.log(unseenMessage,"unseenMessage")
-      results.readBy = unseenMessage
+
       results = await User.populate(results, {
         path: "latestMessage.sender",
         select: "name pic email",
       });
+      console.log(results.length)
       g.push(results);
     });
   res.json(g);
 };
+
+// exports.allGroupAndCouncellors = async (req, res) => {
+//   var g = [];
+//   var unseenMessage = 0 ;
+//   var searchkey = req.query.searchkey;
+//   const h = await User.find({$or:[
+//     {
+//       name:{$regex:searchkey || "" , $options:"i"}
+//     }
+//   ]});
+//   g.push(h);
+  
+//   var data = await Chat.find({
+//     $and: [
+//       { isGroupChat: true },
+//       { users: { $elemMatch: { $eq: req.params.id } } },
+//     ],
+//     $or:[
+//       {
+//         chatName:{$regex:searchkey || "" , $options:"i"}
+//       }
+//     ]
+//   })
+//     .populate("users", "-password")
+//     .populate("groupAdmin", "-password")
+//     .populate("latestMessage")
+//     .sort({ updatedAt: -1 })
+//     .then(async (results) => {
+      
+//       var a = results[0];
+//       for(var i=0; i<results.length ; i++){
+        
+//         const message = await Message.find({chat:results[i]._id})
+        
+//         // console.log(message,"result")
+
+//         for(var j=0 ; j < message.length; j++){
+//           if(!message[j].readMembers.includes(req.params.id)){
+//                      unseenMessage = unseenMessage + 1
+//                if(message[j].chat.equals(results[i]._id)){
+
+//                  results[i].readBy =  unseenMessage
+//                }
+
+//              console.log(results[i].readBy)
+//       }
+//         }
+//         // const message = await Message.find({chat:results[i]._id});
+//         // for(var j=0 ; j < message.length ; j++){
+
+//         //    if(!message[j].readMembers.includes(req.params.id)){
+           
+//         //       unseenMessage = unseenMessage + 1
+//         //     }
+
+//         //     if(a._id.equals(results[i]._id)){
+//         //       m = unseenMessage
+//         //       results[i].readBy = unseenMessage
+              
+//         //     }else if(!a._id.equals(results[i]._id) ){
+//         //       results[i].readBy = unseenMessage - m
+//         //     }else if(message[j].readMembers.includes(req.params.id)){
+//         //       unseenMessage = 0
+//         //     }
+//         //   }
+//       }
+//       // console.log(unseenMessage,"result")
+//       // console.log(m,"result")
+
+//       results.readBy = unseenMessage
+//       results = await User.populate(results, {
+//         path: "latestMessage.sender",
+//         select: "name pic email",
+//       });
+//       g.push(results);
+//     });
+//   res.json(g);
+// };
+
+
+
 
 //@description     Create New Message
 //@route           POST /api/Message/

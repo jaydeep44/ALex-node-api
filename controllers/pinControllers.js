@@ -7,8 +7,9 @@ exports.CreatePin = async (req, res) => {
   const newUser = new Pin(body);
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(newUser.pin, salt);
-  newUser.pin = hash;
-  await newUser
+
+    newUser.pin = hash;
+    await newUser
     .save()
     .then((response) => {
       res.status(200).send(response);
@@ -16,6 +17,7 @@ exports.CreatePin = async (req, res) => {
     .catch((err) => {
       res.status(400).send({ message: err.message });
     });
+  
 };
 
 exports.UpdatePin = async (req, res) => {
